@@ -4,7 +4,7 @@ android {
     def getVersionName = { ->
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'rev-list', 'HEAD','--count'
+            commandLine 'git', 'describe', '--tags'
             standardOutput = stdout
         }
         return stdout.toString().trim()
@@ -23,9 +23,10 @@ android {
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
-        versionName "0.0."+getVersionName()
+        versionName getVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    setProperty("archivesBaseName", "com.example.didred.android" + defaultConfig.versionName)
     buildTypes {
         release {
             minifyEnabled false
@@ -36,8 +37,6 @@ android {
     flavorDimensions "version"
     productFlavors {
         general {
-            // Assigns this product flavor to the "version" flavor dimension.
-            // This property is optional if you are using only one dimension.
             dimension "version"
             applicationIdSuffix ".general"
             versionNameSuffix ""

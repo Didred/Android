@@ -4,15 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.TextView;
-
-import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,8 +16,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textView = findViewById(R.id.header);
-        textView.setText(String.format("%s\n\n%s", getVersion(), getIMEI()));
+        TextView textView = findViewById(R.id.versionView);
+        textView.setText(String.format("Version: %s\n\nIMEI: %s", getVersion(), getIMEI()));
     }
 
     protected String getVersion() {
