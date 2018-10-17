@@ -7,7 +7,8 @@ android {
             commandLine 'git', 'describe', '--tags'
             standardOutput = stdout
         }
-        return stdout.toString().trim()
+        String[] temp = stdout.toString().trim().split("-")
+        return temp[0] + "." + temp[1]
     }
     signingConfigs {
         signConfig {
@@ -20,9 +21,8 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.didred.android"
-        minSdkVersion 23
+        minSdkVersion 15
         targetSdkVersion 28
-        versionCode 1
         versionName getVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -33,17 +33,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.signConfig
         }
+        debug {
+        }
     }
     flavorDimensions "version"
     productFlavors {
         general {
-            dimension "version"
-            applicationIdSuffix ".general"
-            versionNameSuffix ""
+            manifestPlaceholders.screenOrientation = "portrait"
         }
         dev {
-            dimension "version"
-            applicationIdSuffix ".dev"
+            manifestPlaceholders.screenOrientation = "unspecified"
             versionNameSuffix "-dev"
         }
     }
