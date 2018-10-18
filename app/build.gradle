@@ -10,6 +10,12 @@ android {
         String[] temp = stdout.toString().trim().split("-")
         return temp[0] + "." + temp[1]
     }
+    def getVersionCode = { ->
+        String temp = getVersionName()
+        String[] spl = temp.split("\\.")
+        int res = spl[0].toInteger() * 10000 + spl[1].toInteger() * 100 + spl[2].toInteger()
+        return res
+    }
     signingConfigs {
         signConfig {
             keyAlias 'key0'
@@ -23,6 +29,7 @@ android {
         applicationId "com.example.didred.android"
         minSdkVersion 23
         targetSdkVersion 28
+        versionCode getVersionCode()
         versionName getVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
