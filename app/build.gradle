@@ -12,8 +12,8 @@ android {
     }
     signingConfigs {
         signConfig {
-            keyAlias 'MyKey'
-            keyPassword '19.htdbx98'
+            keyAlias 'key0'
+            keyPassword 'aq12wsde34rf'
             storeFile file('/Users/didred/keystores/android.jks')
             storePassword 'aq12ws'
         }
@@ -21,7 +21,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.didred.android"
-        minSdkVersion 15
+        minSdkVersion 23
         targetSdkVersion 28
         versionName getVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -51,6 +51,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
