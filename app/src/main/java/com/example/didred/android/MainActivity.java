@@ -1,10 +1,8 @@
 package com.example.didred.android;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.app.AlertDialog;
@@ -20,19 +18,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textView = findViewById(R.id.versionView);
-        textView.setText(String.format("Version: %s\n\nIMEI: %s", getVersion(), getIMEI()));
+        TextView versionView = findViewById(R.id.versionView);
+        TextView imeiView = findViewById(R.id.imeiView);
+        versionView.setText(String.format("%s: %s", R.string.version, getVersion()));
+        imeiView.setText(String.format("%s: %s", R.string.imei, getIMEI()));
     }
 
     protected String getVersion() {
-        String version = "";
-        try {
-            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            version = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return version;
+        return BuildConfig.VERSION_NAME;
     }
 
     protected String getIMEI() {
@@ -41,12 +34,11 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
-                final Activity thisActivity = this;
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(thisActivity);
-                dialogBuilder.setMessage("The application requests permission to access your functions to show your IMEI.");
-                dialogBuilder.setPositiveButton("close", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                dialogBuilder.setMessage(R.string.explanation);
+                dialogBuilder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int id) {
-                        ActivityCompat.requestPermissions(thisActivity,
+                        ActivityCompat.requestPermissions(MainActivity.this,
                                 new String[] { Manifest.permission.READ_PHONE_STATE },
                                 PERMISSIONS_REQUEST_READ_PHONE_STATE);
                     }
@@ -59,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
                         new String[]{Manifest.permission.READ_PHONE_STATE},
                         PERMISSIONS_REQUEST_READ_PHONE_STATE);
             }
-            return null;
+            return "";
         }
         else {
-            return telephonyManager.getDeviceId();
+            return telephonyManager != null ? telephonyManager.getDeviceId() : "";
         }
     }
 
@@ -70,13 +62,15 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_PHONE_STATE: {
-                TextView textView = findViewById(R.id.versionView);
+                TextView versionView = findViewById(R.id.versionView);
+                TextView imeiView = findViewById(R.id.imeiView);
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    textView.setText(String.format("Version: %s\n\nIMEI: %s", getVersion(), getIMEI()));
+                    versionView.setText(String.format("%s: %s",R.string.version, getVersion()));
+                    imeiView.setText(String.format("%s: %s", R.string.imei, getIMEI()));
                 }
                 else {
-                    textView.setText(String.format("Version: %s", getVersion()));
+                    versionView.setText(String.format("%s: %s", R.string.version, getVersion()));
                 }
             }
         }
