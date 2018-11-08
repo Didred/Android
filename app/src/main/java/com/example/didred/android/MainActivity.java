@@ -15,7 +15,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
     private Boolean shouldShowPermissionExplanation = false;
-    private Boolean shouldRequestPermission = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +23,11 @@ public class MainActivity extends AppCompatActivity {
         TextView versionView = findViewById(R.id.versionView);
         TextView imeiView = findViewById(R.id.imeiView);
 
-        if (savedInstanceState != null) shouldRequestPermission = false;
         String versionName = getResources().getString(R.string.version);
         String imeiName = getResources().getString(R.string.imei);
         versionView.setText(String.format("%s: %s", versionName, getVersion()));
         String imei = getIMEI();
-        if (imei != "") imeiView.setText(String.format("%s: %s", imeiName, imei));
+        if (!imei.equals("")) imeiView.setText(String.format("%s: %s", imeiName, imei));
     }
 
     private void showPermissionExplanation() {
@@ -55,16 +53,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
-            if (shouldRequestPermission) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
-                    showPermissionExplanation();
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_PHONE_STATE},
-                            PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                    shouldShowPermissionExplanation = true;
-                }
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+                showPermissionExplanation();
             }
+            else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_PHONE_STATE},
+                        PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                shouldShowPermissionExplanation = true;
+            }
+
             return "";
         }
         else {
