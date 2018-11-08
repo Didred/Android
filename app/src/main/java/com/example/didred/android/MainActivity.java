@@ -12,7 +12,8 @@ import android.telephony.TelephonyManager;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 2375;
+    static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
+    private Boolean shouldShowPermissionExplanation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +21,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         TextView versionView = findViewById(R.id.versionView);
         TextView imeiView = findViewById(R.id.imeiView);
-        versionView.setText(String.format("%s: %s", R.string.version, getVersion()));
-        imeiView.setText(String.format("%s: %s", R.string.imei, getIMEI()));
+
+
+        String versionName = getResources().getString(R.string.version);
+        String imeiName = getResources().getString(R.string.imei);
+        versionView.setText(String.format("%s: %s", versionName, getVersion()));
+        String imei = getIMEI();
+        if (imei != "") imeiView.setText(String.format("%s: %s", imeiName, imei));
+    }
+
+    private void showPermissionExplanation() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setMessage(R.string.explanation);
+        dialogBuilder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int id) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[] { Manifest.permission.READ_PHONE_STATE },
+                        PERMISSIONS_REQUEST_READ_PHONE_STATE);
+            }
+        });
+
+        dialogBuilder.show();
     }
 
     protected String getVersion() {
@@ -34,22 +54,13 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-                dialogBuilder.setMessage(R.string.explanation);
-                dialogBuilder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[] { Manifest.permission.READ_PHONE_STATE },
-                                PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                    }
-                });
-
-                dialogBuilder.show();
+                showPermissionExplanation();
             }
             else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_PHONE_STATE},
                         PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                shouldShowPermissionExplanation = true;
             }
             return "";
         }
@@ -66,11 +77,19 @@ public class MainActivity extends AppCompatActivity {
                 TextView imeiView = findViewById(R.id.imeiView);
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    versionView.setText(String.format("%s: %s",R.string.version, getVersion()));
-                    imeiView.setText(String.format("%s: %s", R.string.imei, getIMEI()));
+                    String versionName = getResources().getString(R.string.version);
+                    String imeiName = getResources().getString(R.string.imei);
+                    versionView.setText(String.format("%s: %s", versionName, getVersion()));
+                    imeiView.setText(String.format("%s: %s", imeiName, getIMEI()));
                 }
                 else {
-                    versionView.setText(String.format("%s: %s", R.string.version, getVersion()));
+                    if (shouldShowPermissionExplanation){
+                        showPermissionExplanation();
+                        shouldShowPermissionExplanation = false;
+                        return;
+                    }
+                    String versionName = getResources().getString(R.string.version);
+                    versionView.setText(String.format("%s: %s", versionName, getVersion()));
                 }
             }
         }
