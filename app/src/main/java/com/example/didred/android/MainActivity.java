@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
     private Boolean shouldShowPermissionExplanation = false;
+    private Boolean shouldRequestPermission = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         TextView versionView = findViewById(R.id.versionView);
         TextView imeiView = findViewById(R.id.imeiView);
 
-
+        if (savedInstanceState != null) shouldRequestPermission = false;
         String versionName = getResources().getString(R.string.version);
         String imeiName = getResources().getString(R.string.imei);
         versionView.setText(String.format("%s: %s", versionName, getVersion()));
@@ -53,14 +55,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
-                showPermissionExplanation();
-            }
-            else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_PHONE_STATE},
-                        PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                shouldShowPermissionExplanation = true;
+            if (shouldRequestPermission) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+                    showPermissionExplanation();
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_PHONE_STATE},
+                            PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                    shouldShowPermissionExplanation = true;
+                }
             }
             return "";
         }
@@ -70,26 +73,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_PHONE_STATE: {
-                TextView versionView = findViewById(R.id.versionView);
                 TextView imeiView = findViewById(R.id.imeiView);
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    String versionName = getResources().getString(R.string.version);
                     String imeiName = getResources().getString(R.string.imei);
-                    versionView.setText(String.format("%s: %s", versionName, getVersion()));
                     imeiView.setText(String.format("%s: %s", imeiName, getIMEI()));
                 }
-                else {
-                    if (shouldShowPermissionExplanation){
-                        showPermissionExplanation();
-                        shouldShowPermissionExplanation = false;
-                        return;
-                    }
-                    String versionName = getResources().getString(R.string.version);
-                    versionView.setText(String.format("%s: %s", versionName, getVersion()));
+                else if (shouldShowPermissionExplanation) {
+                    showPermissionExplanation();
+                    shouldShowPermissionExplanation = false;
                 }
             }
         }
