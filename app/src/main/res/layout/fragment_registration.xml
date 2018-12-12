@@ -8,7 +8,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/r_textView"
         android:layout_width="165dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -21,24 +21,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/r_email"
         android:layout_width="370dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/r_password"
         android:layout_width="370sp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="112dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="textPassword"
@@ -51,7 +51,7 @@
         android:layout_width="370dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="204dp"
+        android:layout_marginTop="160dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="textPassword"
@@ -61,24 +61,23 @@
 
 
     <Button
-        android:id="@+id/register"
+        android:id="@+id/r_register"
         android:layout_width="370dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="268dp"
+        android:layout_marginTop="208dp"
         android:layout_marginEnd="8dp"
         android:text="Register"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/back"
         android:layout_width="370dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="328dp"
+        android:layout_marginTop="252dp"
         android:layout_marginEnd="8dp"
         android:text="Back"
         app:layout_constraintEnd_toEndOf="parent"
