@@ -61,23 +61,39 @@ public class LoginFragment extends Fragment {
     private View.OnClickListener login = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
+            disableButtons(goToRegistrationButton, loginButton);
+
             final String email = emailEditText.getText().toString().trim();
             final String password = passwordEditText.getText().toString().trim();
 
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                startActivity(new Intent(getActivity(), MainActivity.class));
+            if (!email.isEmpty() && !password.isEmpty()) {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                enableButtons(goToRegistrationButton, loginButton);
+                                if (task.isSuccessful()) {
+                                    startActivity(new Intent(getActivity(), MainActivity.class));
+                                } else {
+                                    Log.d("Error email", email + task.getException().getMessage());
+                                    Log.d("Error password", password);
+                                    Toast.makeText(getContext(), R.string.auth_error_message, Toast.LENGTH_SHORT).show();
+                                }
                             }
-                            else{
-                                Log.d("Error email", email + task.getException().getMessage());
-                                Log.d("Error password", password);
-                                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                        });
+            } else {
+                enableButtons(goToRegistrationButton, loginButton);
+                Toast.makeText(getContext(), R.string.auth_error_message, Toast.LENGTH_SHORT).show();
+            }
         }
     };
+    private void disableButtons(Button createNewUserButton, Button loginButton) {
+        createNewUserButton.setEnabled(false);
+        loginButton.setEnabled(false);
+    }
+
+    private void enableButtons(Button createNewUserButton, Button loginButton) {
+        createNewUserButton.setEnabled(true);
+        loginButton.setEnabled(true);
+    }
 }

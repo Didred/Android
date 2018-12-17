@@ -71,4 +71,10 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1-alpha01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-alpha01'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.firebase:firebase-storage:16.0.5'
+    implementation 'com.github.bumptech.glide:annotations:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation "com.github.bumptech.glide:okhttp3-integration:4.6.1"
+    implementation 'com.github.bumptech.glide:annotations:4.8.0'
+    implementation 'com.firebaseui:firebase-ui-storage:3.3.0'
 }

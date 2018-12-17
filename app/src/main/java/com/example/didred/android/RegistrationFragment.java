@@ -33,6 +33,7 @@ public class RegistrationFragment extends Fragment {
 
     private EditText emailEditText;
     private EditText passwordEditText;
+    private EditText confirmPasswordEditText;
 
 
     public RegistrationFragment() {
@@ -54,6 +55,7 @@ public class RegistrationFragment extends Fragment {
         registerButton.setOnClickListener(register);
         emailEditText = view.findViewById(R.id.r_email);
         passwordEditText = view.findViewById(R.id.r_password);
+        confirmPasswordEditText = view.findViewById(R.id.confirmPassword);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +72,7 @@ public class RegistrationFragment extends Fragment {
 
             final String email = emailEditText.getText().toString().trim();
             final String password = passwordEditText.getText().toString().trim();
-            final String confirmPassword = passwordEditText.getText().toString().trim();
+            final String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
             if (!email.isEmpty() && password.equals(confirmPassword)) {
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)

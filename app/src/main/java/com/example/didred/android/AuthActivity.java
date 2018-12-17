@@ -44,6 +44,6 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     public void startMainActivity() {
-        startActivity(new Intent(this, AboutActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

@@ -1,9 +1,12 @@
 package com.example.didred.android;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -12,9 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 /**
@@ -90,13 +99,36 @@ public class ProfileFragment extends Fragment {
 
         editButton = view.findViewById(R.id.edit);
         editButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_profileFragment_to_profileEditFragment));
+
+        TextView emailView = view.findViewById(R.id.textView2);
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        emailView.setText(userEmail);
+
+        final ImageView profileImageView = view.findViewById(R.id.imageView);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child(user.getUid());
+
+        reference.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                profileImageView.setImageBitmap(bmp);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
     }
 
     private View.OnClickListener logout = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            ((MainActivity) getActivity()).cleanArticlesCache();
             FirebaseAuth.getInstance().signOut();
-            Navigation.findNavController(v).navigate(R.id.loginFragment);
+            ((MainActivity) getActivity()).startAuthActivity();
         }
     };
 

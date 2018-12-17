@@ -1,5 +1,6 @@
 package com.example.didred.android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -105,5 +106,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public void startAuthActivity(){
+        startActivity(new Intent(this, AuthActivity.class));
+        finish();
+    }
+
+    public void cleanArticlesCache(){
+        getSharedPreferences("data", Context.MODE_PRIVATE)
+                .edit()
+                .putString("articles", "")
+                .apply();
     }
 }
