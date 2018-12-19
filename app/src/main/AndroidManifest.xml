@@ -3,6 +3,9 @@
     package="com.example.didred.android">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +32,10 @@
             android:name=".AboutActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="${screenOrientation}" />
-        <activity android:name=".AuthActivity">
+        <activity
+            android:name=".AuthActivity"
+            android:configChanges="orientation|screenSize">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

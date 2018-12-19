@@ -202,7 +202,9 @@ public class ProfileEditFragment extends Fragment {
         pictureDialog.setTitle(getResources().getString(R.string.profile_edit_select_action));
         String[] pictureDialogItems = {
                 getResources().getString(R.string.profile_edit_select_from_gallery),
-                getResources().getString(R.string.profile_edit_capture_from_camera) };
+                getResources().getString(R.string.profile_edit_capture_from_camera)
+        };
+
         pictureDialog.setItems(pictureDialogItems,
                 new DialogInterface.OnClickListener() {
                     @Override
