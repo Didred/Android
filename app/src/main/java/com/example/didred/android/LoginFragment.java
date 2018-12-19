@@ -2,6 +2,7 @@ package com.example.didred.android;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,77 +25,79 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class LoginFragment extends Fragment {
 
-    private Button goToRegistrationButton;
+    private EditText emailField;
+    private EditText passwordField;
+    private Button createNewUserButton;
     private Button loginButton;
-
-    private EditText emailEditText;
-    private EditText passwordEditText;
-
-    public LoginFragment() {
-        // Required empty public constructor
-    }
-
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
-        goToRegistrationButton = view.findViewById(R.id.l_register);
-        goToRegistrationButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_registrationFragment));
+        progressBar = view.findViewById(R.id.progressBar);
+        emailField = view.findViewById(R.id.emailField);
+        passwordField = view.findViewById(R.id.passwordField);
+        createNewUserButton = view.findViewById(R.id.createNewUserButton);
+        loginButton = view.findViewById(R.id.loginButton);
 
-        loginButton = view.findViewById(R.id.l_login);
-        loginButton.setOnClickListener(login);
-
-        emailEditText = view.findViewById(R.id.l_email);
-        passwordEditText = view.findViewById(R.id.l_password);
+        createNewUserButton.setOnClickListener(
+                Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_registrationFragment)
+        );
+        loginButton.setOnClickListener(loginButtonClickListener);
     }
 
-    private View.OnClickListener login = new View.OnClickListener() {
+    private View.OnClickListener loginButtonClickListener = new View.OnClickListener() {
         @Override
-        public void onClick(final View view) {
-            disableButtons(goToRegistrationButton, loginButton);
+        public void onClick(final View v) {
+            disableButtons();
 
-            final String email = emailEditText.getText().toString().trim();
-            final String password = passwordEditText.getText().toString().trim();
+            final String email = emailField.getText().toString().trim();
+            final String password = passwordField.getText().toString().trim();
 
             if (!email.isEmpty() && !password.isEmpty()) {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                enableButtons(goToRegistrationButton, loginButton);
-                                if (task.isSuccessful()) {
-                                    startActivity(new Intent(getActivity(), MainActivity.class));
-                                } else {
-                                    Log.d("Error email", email + task.getException().getMessage());
-                                    Log.d("Error password", password);
-                                    Toast.makeText(getContext(), R.string.auth_error_message, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                progressBar.setVisibility(ProgressBar.VISIBLE);
+                FirebaseAuth.getInstance()
+                        .signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(completeSignInListener);
             } else {
-                enableButtons(goToRegistrationButton, loginButton);
+                enableButtons();
                 Toast.makeText(getContext(), R.string.auth_error_message, Toast.LENGTH_SHORT).show();
             }
         }
     };
-    private void disableButtons(Button createNewUserButton, Button loginButton) {
+
+    private OnCompleteListener<AuthResult> completeSignInListener = new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            enableButtons();
+            if (task.isSuccessful()) {
+                startActivity(new Intent(getActivity(), MainActivity.class));
+            } else {
+                Log.d("Login", task.getException().getMessage());
+                Toast.makeText(getContext(), R.string.auth_error_message, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    private void disableButtons() {
         createNewUserButton.setEnabled(false);
         loginButton.setEnabled(false);
     }
 
-    private void enableButtons(Button createNewUserButton, Button loginButton) {
+    private void enableButtons() {
         createNewUserButton.setEnabled(true);
         loginButton.setEnabled(true);
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 }

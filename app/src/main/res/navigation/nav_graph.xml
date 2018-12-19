@@ -24,4 +24,9 @@
         android:name="com.example.didred.android.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/rssFragment"
+        android:name="com.example.didred.android.RssFragment"
+        android:label="fragment_rss"
+        tools:layout="@layout/fragment_rss" />
 </navigation>

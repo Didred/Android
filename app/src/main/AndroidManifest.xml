@@ -22,10 +22,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="sdapp"
-                    android:host="com.example.didred.android"/>
+                    android:host="com.example.didred.android"
+                    android:scheme="sdapp" />
             </intent-filter>
         </activity>
         <activity
@@ -35,13 +37,17 @@
         <activity
             android:name=".AuthActivity"
             android:configChanges="orientation|screenSize">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RssWebViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_rss_web_view"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

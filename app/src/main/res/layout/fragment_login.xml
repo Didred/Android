@@ -6,8 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".LoginFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
@@ -23,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/l_email"
+        android:id="@+id/emailField"
         android:layout_width="370dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -36,7 +42,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/l_password"
+        android:id="@+id/passwordField"
         android:layout_width="370sp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -49,7 +55,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/l_login"
+        android:id="@+id/loginButton"
         android:layout_width="370dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -61,7 +67,7 @@
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <Button
-        android:id="@+id/l_register"
+        android:id="@+id/createNewUserButton"
         android:layout_width="370dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
