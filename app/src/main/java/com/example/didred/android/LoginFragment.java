@@ -42,8 +42,10 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         progressBar = view.findViewById(R.id.progressBar);
+
         emailField = view.findViewById(R.id.emailField);
         passwordField = view.findViewById(R.id.passwordField);
+
         createNewUserButton = view.findViewById(R.id.createNewUserButton);
         loginButton = view.findViewById(R.id.loginButton);
 

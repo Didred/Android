@@ -20,7 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.didred.android.UserProfile;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,24 +49,26 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        disableButtons();
+
         progressBar = view.findViewById(R.id.progressBar);
+
         editButton = view.findViewById(R.id.profileEditButton);
         logoutButton = view.findViewById(R.id.profileLogoutButton);
-        disableButtons();
 
         editButton.setOnClickListener(
                 Navigation.createNavigateOnClickListener(R.id.action_profileFragment_to_profileEditFragment)
         );
         logoutButton.setOnClickListener(logoutButtonListener);
 
-        TextView emailView = view.findViewById(R.id.profileEmailView);
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        TextView emailView = view.findViewById(R.id.profileEmailView);
         emailView.setText(userEmail);
 
         phoneNumberView = view.findViewById(R.id.profilePhoneNumberView);
         fullNameView = view.findViewById(R.id.profileFullNameView);
-
         profileImageView = view.findViewById(R.id.profileImageView);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         StorageReference reference = FirebaseStorage.getInstance().getReference().child(user.getUid());
         reference.getBytes(Long.MAX_VALUE)

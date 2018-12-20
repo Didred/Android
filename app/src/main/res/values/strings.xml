@@ -3,6 +3,8 @@
     <string name="version">Version</string>
     <string name="imei">IMEI</string>
     <string name="close">close</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
     <string name="explanation">The application requests permission to access your functions to show your IMEI.</string>
     <string name="home_fragment">Home</string>
     <string name="profile_fragment">Profile</string>
@@ -14,7 +16,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="registration_error">Email should not be blank and passwords must be equal</string>
-    <string name="auth_error_message">Error</string>
+    <string name="auth_error_message">Some error occurred.</string>
     <string name="profile_edit_error_message">Some error occurred.</string>
     <string name="profile_edit_select_from_gallery">Select photo from gallery</string>
     <string name="profile_edit_capture_from_camera">Capture photo from camera</string>
@@ -25,4 +27,16 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="hello_rss_fragment">Rss</string>
+    <string name="rss_input_dialog_source_example">http://rss_sourse.xml</string>
+    <string name="rss_feed_loading_error_message">Loading failed.</string>
+    <string name="rss_feed_incorrect_url">Incorrect RssFeed link</string>
+    <string name="rss_feed_connection_error">No internet connection</string>
+    <string name="rss_feed_preferences_last_userId">Last user id</string>
+    <string name="rss_feed_preferences_rssUrl">Rss url</string>
+    <string name="rss_feed_welcome">Welcome to rss!</string>
+    <string name="rss_feed_success_load_from_cache">Feed loaded from cache</string>
+    <string name="rss_feed_correct_url_request">You need to specify correct rss feed link</string>
+    <string name="rss_feed_success_load_from_internet">Feed loaded from internet</string>
+    <string name="rss_feed_loading">Loading...</string>
+    <string name="rss_feed_menu_change_source">Change rss source</string>
 </resources>

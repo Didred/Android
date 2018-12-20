@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/rssFragmentMenuChangeSource"
+        android:title="@string/rss_feed_menu_change_source" />
+
+</menu>
