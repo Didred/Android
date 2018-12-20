@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.didred.android.UserRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +34,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class ProfileFragment extends Fragment {
+    private UserRepository userRepository;
+
     private TextView phoneNumberView;
     private TextView fullNameView;
     private ImageView profileImageView;
@@ -49,7 +52,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
-        disableButtons();
+        userRepository = new UserRepository();
 
         progressBar = view.findViewById(R.id.progressBar);
 
@@ -69,22 +72,18 @@ public class ProfileFragment extends Fragment {
         fullNameView = view.findViewById(R.id.profileFullNameView);
         profileImageView = view.findViewById(R.id.profileImageView);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child(user.getUid());
-        reference.getBytes(Long.MAX_VALUE)
+        userRepository.getProfileImageBitmap()
                 .addOnSuccessListener(successImageLoadListener)
                 .addOnFailureListener(failureImageLoadListener);
 
-        DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference()
-                .child("userProfiles").child(user.getUid());
-        dbReference.addValueEventListener(profileEventListener);
+        userRepository.addProfileEventListener(profileEventListener);
     }
 
     private View.OnClickListener logoutButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
             ((MainActivity) getActivity()).cleanArticlesCache();
-            FirebaseAuth.getInstance().signOut();
+            userRepository.signOut();
             ((MainActivity) getActivity()).startAuthActivity();
         }
     };

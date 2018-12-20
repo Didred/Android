@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.didred.android.UserRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class RegistrationFragment extends Fragment {
 
+    private UserRepository userRepository;
+
     private Button registerButton;
     private Button login;
 
@@ -35,21 +38,16 @@ public class RegistrationFragment extends Fragment {
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
 
-
-    public RegistrationFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_registration, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        userRepository = new UserRepository();
+
         registerButton = view.findViewById(R.id.r_register);
         login = view.findViewById(R.id.back);
         registerButton.setOnClickListener(register);
@@ -75,7 +73,7 @@ public class RegistrationFragment extends Fragment {
             final String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
             if (!email.isEmpty() && password.equals(confirmPassword)) {
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                userRepository.createNewUser(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {

@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.didred.android.UserProfile;
+import com.example.didred.android.UserRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -66,8 +67,7 @@ public class ProfileEditFragment extends Fragment {
     private ProgressBar progressBar;
     private Button saveButton;
 
-    private UserProfile userProfile;
-    private FirebaseUser user;
+    private UserRepository userRepository;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -76,7 +76,9 @@ public class ProfileEditFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        userRepository = new UserRepository();
+
         saveButton = view.findViewById(R.id.profileEditSaveButton);
         progressBar = view.findViewById(R.id.progressBar);
         disableButtons();
@@ -95,22 +97,18 @@ public class ProfileEditFragment extends Fragment {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         emailField.setText(userEmail);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child(user.getUid());
-        reference.getBytes(Long.MAX_VALUE)
+        userRepository.getProfileImageBitmap()
                 .addOnSuccessListener(successImageLoadListener)
                 .addOnFailureListener(failureImageLoadListener);
 
-        DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference()
-                .child("userProfiles").child(user.getUid());
-        dbReference.addValueEventListener(profileEventListener);
+        userRepository.addProfileEventListener(profileEventListener);
     }
 
     private ValueEventListener profileEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
-            if (userProfile!= null){
+            if (userProfile != null){
                 fullNameField.setText(userProfile.getFullName());
                 phoneField.setText(userProfile.getPhoneNumber());
             }
@@ -146,9 +144,8 @@ public class ProfileEditFragment extends Fragment {
             disableButtons();
 
             String email = emailField.getText().toString().trim();
-            user = FirebaseAuth.getInstance().getCurrentUser();
 
-            user.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            userRepository.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (!task.isSuccessful()) {
@@ -161,15 +158,12 @@ public class ProfileEditFragment extends Fragment {
 
             String fullName = fullNameField.getText().toString().trim();
             String phoneNumber = phoneField.getText().toString().trim();
-            DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference()
-                    .child("userProfiles").child(user.getUid());
 
             final UserProfile profile = new UserProfile(fullName, phoneNumber);
-            dbReference.setValue(profile);
+            userRepository.setUserProfile(profile);
 
             if(isPhotoChanged){
-                StorageReference reference = FirebaseStorage.getInstance().getReference().child(user.getUid());
-                reference.putBytes(imageToByteArray()).addOnFailureListener(new OnFailureListener() {
+                userRepository.putProfileImageBitmap(imageToByteArray()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         Log.d("ProfileEditImage", exception.getMessage());

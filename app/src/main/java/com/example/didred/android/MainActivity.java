@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
             if (userProfile != null){
-                getFullNameTextViewFromNavView().setText(userProfile.getFullName());
+                getFullName().setText(userProfile.getFullName());
             }
         }
         @Override
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-    private TextView getFullNameTextViewFromNavView() {
+    private TextView getFullName() {
         View headerView = navigationView.getHeaderView(0);
         return headerView.findViewById(R.id.nav_header_profile_fullname);
     }

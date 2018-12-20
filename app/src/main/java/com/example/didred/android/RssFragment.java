@@ -134,7 +134,7 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.rssFragmentMenuChangeSource:
                 showRssSourceInputDialog();
@@ -286,7 +286,7 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.rss_fragment_menu, menu);
     }

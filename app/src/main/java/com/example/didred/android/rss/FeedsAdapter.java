@@ -30,8 +30,8 @@ public class FeedsAdapter extends RecyclerView.Adapter<FeedsAdapter.MyViewHolder
     private OnItemClickListener onItemClickListener;
 
     public FeedsAdapter(Context context, ArrayList<FeedItem>feedItems, OnItemClickListener listener){
-        this.feedItems=feedItems;
-        this.context=context;
+        this.feedItems = feedItems;
+        this.context = context;
         this.onItemClickListener = listener;
     }
 
@@ -39,7 +39,7 @@ public class FeedsAdapter extends RecyclerView.Adapter<FeedsAdapter.MyViewHolder
     @Override
     public FeedsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.rss_feed_item, parent,false);
-        MyViewHolder holder=new MyViewHolder(view);
+        MyViewHolder holder = new MyViewHolder(view);
         return holder;
     }
 
@@ -73,10 +73,10 @@ public class FeedsAdapter extends RecyclerView.Adapter<FeedsAdapter.MyViewHolder
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            Title= itemView.findViewById(R.id.title_text);
-            Description= itemView.findViewById(R.id.description_text);
-            Date=  itemView.findViewById(R.id.date_text);
-            Thumbnail= itemView.findViewById(R.id.thumb_img);
+            Title = itemView.findViewById(R.id.title_text);
+            Description = itemView.findViewById(R.id.description_text);
+            Date = itemView.findViewById(R.id.date_text);
+            Thumbnail = itemView.findViewById(R.id.thumb_img);
         }
 
         public void setOnClickListener(final OnItemClickListener listener, final FeedItem item) {
