@@ -23,31 +23,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.didred.android.UserProfile;
-import com.example.didred.android.UserRepository;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -61,7 +51,6 @@ public class ProfileEditFragment extends Fragment {
     private NavController navController;
 
     private ImageView profileImage;
-    private EditText emailField;
     private EditText phoneField;
     private EditText fullNameField;
     private ProgressBar progressBar;
@@ -88,14 +77,13 @@ public class ProfileEditFragment extends Fragment {
         profileImage = view.findViewById(R.id.profileEditImageView);
         profileImage.setOnClickListener(profileImageListener);
 
-        emailField = view.findViewById(R.id.profileEditEmailField);
+
         phoneField = view.findViewById(R.id.profileEditPhoneField);
         fullNameField = view.findViewById(R.id.profileEditFullNameField);
 
         saveButton.setOnClickListener(saveButtonListener);
 
-        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        emailField.setText(userEmail);
+
 
         userRepository.getProfileImageBitmap()
                 .addOnSuccessListener(successImageLoadListener)
@@ -116,7 +104,7 @@ public class ProfileEditFragment extends Fragment {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.d("ProfileEditInfo", databaseError.getMessage());
+            Log.d(String.valueOf(R.string.profileEditInfo), databaseError.getMessage());
             Toast.makeText(getContext(), R.string.profile_edit_error_message, Toast.LENGTH_SHORT).show();
         }
     };
@@ -133,7 +121,7 @@ public class ProfileEditFragment extends Fragment {
     private OnFailureListener failureImageLoadListener = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception exception) {
-            Log.d("ProfileEditImage", exception.getMessage());
+            Log.d(String.valueOf(R.string.profileEditImage), exception.getMessage());
             enableButtons();
         }
     };
@@ -142,19 +130,6 @@ public class ProfileEditFragment extends Fragment {
         @Override
         public void onClick(View v) {
             disableButtons();
-
-            String email = emailField.getText().toString().trim();
-
-            userRepository.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(getContext(),
-                                R.string.profile_edit_error_message,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
 
             String fullName = fullNameField.getText().toString().trim();
             String phoneNumber = phoneField.getText().toString().trim();
@@ -166,7 +141,7 @@ public class ProfileEditFragment extends Fragment {
                 userRepository.putProfileImageBitmap(imageToByteArray()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Log.d("ProfileEditImage", exception.getMessage());
+                        Log.d(String.valueOf(R.string.profileEditImage), exception.getMessage());
                         Toast.makeText(getContext(), R.string.profile_edit_error_message, Toast.LENGTH_SHORT).show();
                         enableButtons();
                     }
@@ -230,7 +205,7 @@ public class ProfileEditFragment extends Fragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_GALLERY);
+        startActivityForResult(Intent.createChooser(intent, String.valueOf(R.string.selectPicture)), REQUEST_GALLERY);
     }
 
     private void choosePhotoFromCamera(){
@@ -261,16 +236,6 @@ public class ProfileEditFragment extends Fragment {
         }
     }
 
-    private void disableButtons() {
-        saveButton.setEnabled(false);
-        progressBar.setVisibility(ProgressBar.VISIBLE);
-    }
-
-    private void enableButtons() {
-        saveButton.setEnabled(true);
-        progressBar.setVisibility(ProgressBar.INVISIBLE);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -287,5 +252,15 @@ public class ProfileEditFragment extends Fragment {
             Uri imageUri = data.getData();
             profileImage.setImageURI(imageUri);
         }
+    }
+
+    private void disableButtons() {
+        saveButton.setEnabled(false);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+    }
+
+    private void enableButtons() {
+        saveButton.setEnabled(true);
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 }

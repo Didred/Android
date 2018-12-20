@@ -71,7 +71,7 @@ public class RssWebViewActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mWebView = findViewById(R.id.rssWebView);
-        String url = getIntent().getStringExtra("URL");
+        String url = getIntent().getStringExtra(String.valueOf(R.string.url));
         mWebView.loadUrl(url);
         mWebView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -20,18 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.didred.android.UserRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class ProfileFragment extends Fragment {
     private UserRepository userRepository;
@@ -63,8 +56,9 @@ public class ProfileFragment extends Fragment {
                 Navigation.createNavigateOnClickListener(R.id.action_profileFragment_to_profileEditFragment)
         );
         logoutButton.setOnClickListener(logoutButtonListener);
+        disableButtons();
 
-        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        String userEmail = userRepository.getEmail();
         TextView emailView = view.findViewById(R.id.profileEmailView);
         emailView.setText(userEmail);
 
@@ -100,7 +94,7 @@ public class ProfileFragment extends Fragment {
     private OnFailureListener failureImageLoadListener = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception exception) {
-            Log.d("ProfileImage", exception.getMessage());
+            Log.d(String.valueOf(R.string.profileImage), exception.getMessage());
             enableButtons();
         }
     };
@@ -116,7 +110,7 @@ public class ProfileFragment extends Fragment {
         }
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.d("ProfileImage", databaseError.getMessage());
+            Log.d(String.valueOf(R.string.profileImage), databaseError.getMessage());
             Toast.makeText(getContext(), R.string.profile_show_error_message, Toast.LENGTH_SHORT).show();
         }
     };

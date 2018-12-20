@@ -4,14 +4,22 @@
     <string name="imei">IMEI</string>
     <string name="close">close</string>
     <string name="ok">Ok</string>
+    <string name="url">URL</string>
     <string name="cancel">Cancel</string>
+    <string name="login">Login</string>
+    <string name="profileImage">ProfileImage</string>
+    <string name="cacheRepository">CacheRepository</string>
+    <string name="profileEditImage">ProfileEditImage</string>
+    <string name="profileEditInfo">ProfileEditInfo</string>
+    <string name="selectPicture">Select Picture</string>
+    <string name="registration">Registration</string>
     <string name="explanation">The application requests permission to access your functions to show your IMEI.</string>
     <string name="home_fragment">Home</string>
     <string name="profile_fragment">Profile</string>
     <string name="title_activity_main">Android</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_title">Full name</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -39,4 +47,13 @@
     <string name="rss_feed_success_load_from_internet">Feed loaded from internet</string>
     <string name="rss_feed_loading">Loading...</string>
     <string name="rss_feed_menu_change_source">Change rss source</string>
+    <string name="profile_edit_button_save">Save</string>
+    <string name="profile_button_edit">Edit</string>
+    <string name="profile_button_logout">Logout</string>
+    <string name="profile_phone">Phone</string>
+    <string name="profile_full_name">Full name</string>
+    <string name="profile_email">Email</string>
+    <string name="registration_error_email">Error email</string>
+    <string name="registration_error_password">Error password</string>
+    <string name="registration_error_password_confirm">Error password confirm</string>
 </resources>

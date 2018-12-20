@@ -17,22 +17,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.didred.android.UserRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class RegistrationFragment extends Fragment {
 
     private UserRepository userRepository;
 
     private Button registerButton;
-    private Button login;
+    private Button loginButton;
 
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -49,13 +44,13 @@ public class RegistrationFragment extends Fragment {
         userRepository = new UserRepository();
 
         registerButton = view.findViewById(R.id.r_register);
-        login = view.findViewById(R.id.back);
+        loginButton = view.findViewById(R.id.back);
         registerButton.setOnClickListener(register);
         emailEditText = view.findViewById(R.id.r_email);
         passwordEditText = view.findViewById(R.id.r_password);
         confirmPasswordEditText = view.findViewById(R.id.confirmPassword);
 
-        login.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Navigation.findNavController(v).popBackStack();
@@ -66,40 +61,40 @@ public class RegistrationFragment extends Fragment {
     private View.OnClickListener register = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-            disableButtons(registerButton, login);
+            disableButtons();
 
             final String email = emailEditText.getText().toString().trim();
             final String password = passwordEditText.getText().toString().trim();
             final String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
-            if (!email.isEmpty() && password.equals(confirmPassword)) {
-                userRepository.createNewUser(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    startActivity(new Intent(getActivity(), MainActivity.class));
-                                } else {
-                                    enableButtons(registerButton, login);
-                                    Log.d("Error email", email + task.getException().getMessage());
-                                    Log.d("Error password", password);
-                                    Log.d("Error password confirm", confirmPassword);
-                                    Toast.makeText(getContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+            if (!email.isEmpty() && !password.isEmpty() && password.equals(confirmPassword)) {
+                userRepository.createNewUser(email, password).addOnCompleteListener(completeRegisterListener);
             } else {
-                enableButtons(registerButton, login);
+                enableButtons();
                 Toast.makeText(getContext(), R.string.registration_error, Toast.LENGTH_SHORT).show();
             }
         }
     };
-    private void disableButtons(Button registerButton, Button loginButton) {
+
+    private OnCompleteListener<AuthResult> completeRegisterListener = new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            enableButtons();
+            if (task.isSuccessful()) {
+                startActivity(new Intent(getActivity(), MainActivity.class));
+            } else {
+                Log.d(String.valueOf(R.string.registration), task.getException().getMessage());
+                Toast.makeText(getContext(), R.string.auth_error_message, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    private void disableButtons() {
         registerButton.setEnabled(false);
         loginButton.setEnabled(false);
     }
 
-    private void enableButtons(Button registerButton, Button loginButton) {
+    private void enableButtons() {
         registerButton.setEnabled(true);
         loginButton.setEnabled(true);
     }

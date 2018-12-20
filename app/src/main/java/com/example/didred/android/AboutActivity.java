@@ -10,7 +10,6 @@ import androidx.core.app.ActivityCompat;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.TextView;
 
 public class AboutActivity extends AppCompatActivity {
@@ -30,31 +29,6 @@ public class AboutActivity extends AppCompatActivity {
         String imei = getIMEI();
         if (!imei.equals("")) imeiView.setText(String.format("%s: %s", imeiName, imei));
     }
-
-    @Override
-    protected void onDestroy() {
-        Log.d("1","onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onStart() {
-        Log.d("2","onStart");
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        Log.d("2","onStop");
-        super.onStop();
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d("2","onPause");
-        super.onPause();
-    }
-
 
     private void showPermissionExplanation() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);

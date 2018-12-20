@@ -23,9 +23,7 @@ import java.util.List;
 public class CacheRepository {
     private static CacheRepository instance;
 
-    private CacheRepository() {
-
-    }
+    private CacheRepository() {}
 
     public static CacheRepository getInstance() {
         if (instance == null) {
@@ -72,9 +70,9 @@ public class CacheRepository {
             reader.endArray();
 
         } catch (FileNotFoundException exception) {
-            Log.d("CacheRepository", exception.getMessage());
+            Log.d(String.valueOf(R.string.cacheRepository), exception.getMessage());
         } catch (IOException exception) {
-            Log.d("CacheRepository", exception.getMessage());
+            Log.d(String.valueOf(R.string.cacheRepository), exception.getMessage());
         }
         return feedItems;
     }
@@ -87,7 +85,7 @@ public class CacheRepository {
         try {
             cacheFile.createNewFile();
         } catch (IOException exception) {
-            Log.d("CacheRepository", exception.getMessage());
+            Log.d(String.valueOf(R.string.cacheRepository), exception.getMessage());
         }
         return cacheFile;
     }

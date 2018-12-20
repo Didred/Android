@@ -19,11 +19,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.didred.android.UserRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 
 public class LoginFragment extends Fragment {
@@ -85,7 +83,7 @@ public class LoginFragment extends Fragment {
             if (task.isSuccessful()) {
                 startActivity(new Intent(getActivity(), MainActivity.class));
             } else {
-                Log.d("Login", task.getException().getMessage());
+                Log.d(String.valueOf(R.string.login), task.getException().getMessage());
                 Toast.makeText(getContext(), R.string.auth_error_message, Toast.LENGTH_SHORT).show();
             }
         }

@@ -27,8 +27,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.didred.android.CacheRepository;
-import com.example.didred.android.OnProgressListener;
 import com.example.didred.android.rss.FeedItem;
 import com.example.didred.android.rss.FeedsAdapter;
 import com.example.didred.android.rss.RssReader;
@@ -112,7 +110,7 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
             public void onItemClick(FeedItem item) {
                 if (!loadedFromCache) {
                     Intent intent = new Intent(getContext(), RssWebViewActivity.class);
-                    intent.putExtra("URL", item.getLink());
+                    intent.putExtra(String.valueOf(R.string.url), item.getLink());
                     startActivity(intent);
                 } else {
                     Toast.makeText(getContext(), R.string.rss_feed_connection_error, Toast.LENGTH_LONG).show();
@@ -182,13 +180,13 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
                 .setCancelable(false)
                 .setMessage(R.string.rss_feed_correct_url_request)
                 .setTitle(title)
-                .setPositiveButton("OK",
+                .setPositiveButton(R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 showRssSourceInputDialog();
                             }
                         })
-                .setNegativeButton("Cancel",
+                .setNegativeButton(R.string.cancel,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

@@ -8,21 +8,13 @@ import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Log;
 import android.view.View;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -45,15 +37,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentInteractionListener{
 
     private NavController navController = null;
-    private FirebaseUser user;
+    private UserRepository userRepository;
     private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        userRepository = new UserRepository();
+        if (userRepository.getUser() == null){
             startAuthActivity();
             return;
         }
@@ -63,9 +55,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         navController = Navigation.findNavController(findViewById(R.id.fragment));
 
-        DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference()
-                .child("userProfiles").child(user.getUid());
-        dbReference.addValueEventListener(profileEventListener);
+        userRepository.addProfileEventListener(profileEventListener);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = findViewById(R.id.nav_view);
-        setProfileEmail(user.getEmail());
+        setProfileEmail(userRepository.getEmail());
         navigationView.setNavigationItemSelectedListener(this);
 
         updateNavImage();
@@ -153,8 +143,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateNavImage(){
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child(user.getUid());
-        reference.getBytes(Long.MAX_VALUE)
+        userRepository.getProfileImageBitmap()
                 .addOnSuccessListener(successImageLoadListener)
                 .addOnFailureListener(failureImageLoadListener);
     }
@@ -170,7 +159,7 @@ public class MainActivity extends AppCompatActivity
     private OnFailureListener failureImageLoadListener = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception exception) {
-            Log.d("ProfileImage", exception.getMessage());
+            Log.d(String.valueOf(R.string.profileImage), exception.getMessage());
         }
     };
 
@@ -195,7 +184,7 @@ public class MainActivity extends AppCompatActivity
         }
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.d("ProfileImage", databaseError.getMessage());
+            Log.d(String.valueOf(R.string.profileImage), databaseError.getMessage());
         }
     };
 
