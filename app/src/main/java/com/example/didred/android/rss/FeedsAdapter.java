@@ -1,6 +1,7 @@
 package com.example.didred.android.rss;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class FeedsAdapter extends RecyclerView.Adapter<FeedsAdapter.MyViewHolder
     @Override
     public FeedsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.rss_feed_item, parent,false);
+        Log.d("Holder", "create");
         MyViewHolder holder = new MyViewHolder(view);
         return holder;
     }
@@ -47,6 +49,7 @@ public class FeedsAdapter extends RecyclerView.Adapter<FeedsAdapter.MyViewHolder
     public void onBindViewHolder(@NonNull FeedsAdapter.MyViewHolder holder, int position) {
         FeedItem item = feedItems.get(position);
 
+        Log.d("Holder", "bind");
         holder.Title.setText(item.getTitle());
         holder.Description.setText(item.getDescription());
         holder.Date.setText(item.getPubDate());
