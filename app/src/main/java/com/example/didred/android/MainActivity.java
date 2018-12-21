@@ -24,8 +24,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 
 import android.view.Menu;
@@ -34,6 +36,8 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentInteractionListener{
@@ -208,21 +212,22 @@ public class MainActivity extends AppCompatActivity
     private void askAndNavigateToFragment(final int fragmentId, final Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.youre_about_to_loose_changes)
-                .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (context == null) {
-                            navController.navigate(fragmentId);
-                        }
-                        else{
-                            startAboutActivity();
-                        }
+            .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    navController.popBackStack();
+                    if (context == null) {
+                        navController.navigate(fragmentId);
                     }
-                })
-                .setNegativeButton(R.string.stay, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                    else{
+                        startAboutActivity();
+                    }
+                }
+            })
+            .setNegativeButton(R.string.stay, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
 
-                    }
-                });
+                }
+            });
         builder.create().show();
     }
 

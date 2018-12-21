@@ -150,7 +150,9 @@ public class RssReader extends AsyncTask<Void, Void, Void> {
                         feedItem.setDescription(content);
                     }
                 }
-                feedItems.add(feedItem);
+                if (feedItem.thumbnailUrl != null && feedItem.thumbnailUrl.equals("")) {
+                    feedItems.add(feedItem);
+                }
                 notifyOnFeedItemLoaded(feedItem);
             }
         }

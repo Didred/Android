@@ -6,7 +6,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 public class UserProfile {
     private int Id;
     private String image;
-    private String email;
     private String fullName;
     private String phoneNumber;
 

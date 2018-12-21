@@ -49,7 +49,7 @@ public class RegistrationFragment extends Fragment {
         registerButton.setOnClickListener(register);
 
         emailEditText = view.findViewById(R.id.r_email);
-        emailEditText.addTextChangedListener(new EmailValidator(emailEditText, getContext()));
+        emailEditText.addTextChangedListener(new EmailValidator(emailEditText));
 
         passwordEditText = view.findViewById(R.id.r_password);
         confirmPasswordEditText = view.findViewById(R.id.confirmPassword);

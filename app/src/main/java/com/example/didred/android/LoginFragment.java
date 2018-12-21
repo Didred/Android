@@ -47,7 +47,7 @@ public class LoginFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
 
         emailField = view.findViewById(R.id.emailField);
-        emailField.addTextChangedListener(new EmailValidator(emailField, getContext()));
+        emailField.addTextChangedListener(new EmailValidator(emailField));
 
         passwordField = view.findViewById(R.id.passwordField);
 

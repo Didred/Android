@@ -43,7 +43,6 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
     private RecyclerView recyclerView;
     private FeedsAdapter feedsAdapter;
     private ProgressDialog progressDialog;
-    private boolean loadedFromCache = false;
     private FeedsAdapter.OnItemClickListener onItemClickListener;
 
     @Override
@@ -122,10 +121,8 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         String lastUserId = sharedPref.getString(getString(R.string.rss_feed_preferences_last_userId), null);
         String rssUrl = sharedPref.getString(getString(R.string.rss_feed_preferences_rssUrl), null);
         if (lastUserId == null) {
-            askToInputNewUrl(getString(R.string.rss_feed_welcome));
         } else if (!lastUserId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             CacheRepository.getInstance().removeCacheForUser(getContext(), lastUserId);
-            askToInputNewUrl(getString(R.string.rss_feed_welcome));
         } else {
             doRss(rssUrl);
         }
@@ -140,6 +137,35 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showRssSourceInputDialog() {
+        LayoutInflater li = LayoutInflater.from(getContext());
+        View dialogView = li.inflate(R.layout.rss_source_input_dialog, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setView(dialogView);
+
+        final EditText sourceInput = dialogView.findViewById(R.id.rssSourceInputDialogField);
+
+        builder.setCancelable(false).setPositiveButton(R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        String url = sourceInput.getText().toString();
+                        setPreference(null, url);
+                        doRss(url);
+                    }
+                })
+                .setNegativeButton(R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void doRss(String address) {
@@ -164,7 +190,6 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
     }
 
     private void loadRssFeedFromCache() {
-        //loadedFromCache = true;
         ArrayList<FeedItem> items = CacheRepository.getInstance().readRssCache(getContext(),
                 FirebaseAuth.getInstance().getCurrentUser().getUid());
         feedsAdapter.setFeedItems(items);
@@ -187,57 +212,6 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         return false;
     }
 
-    private void askToInputNewUrl(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder
-                .setCancelable(false)
-                .setMessage(R.string.rss_feed_correct_url_request)
-                .setTitle(title)
-                .setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                showRssSourceInputDialog();
-                            }
-                        })
-                .setNegativeButton(R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-        builder.create().show();
-    }
-
-    private void showRssSourceInputDialog() {
-        LayoutInflater li = LayoutInflater.from(getContext());
-        View dialogView = li.inflate(R.layout.rss_source_input_dialog, null);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        builder.setView(dialogView);
-
-        final EditText sourceInput = dialogView.findViewById(R.id.rssSourceInputDialogField);
-
-        builder.setCancelable(false).setPositiveButton(R.string.ok,
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog,int id) {
-                    String url = sourceInput.getText().toString();
-                    setRssUrlPreference(url);
-                    doRss(url);
-                }
-            })
-            .setNegativeButton(R.string.cancel,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
     @Override
     public void onFeedItemLoaded(final FeedItem item) {
         getActivity().runOnUiThread(new Runnable() {
@@ -248,17 +222,14 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         });
     }
 
-    private void setLastUserUidPreference(String uid) {
+    private void setPreference(String uid, String url) {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.rss_feed_preferences_last_userId), uid);
-        editor.commit();
-    }
-
-    private void setRssUrlPreference(String url) {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.rss_feed_preferences_rssUrl), url);
+        if (uid != null) {
+            editor.putString(getString(R.string.rss_feed_preferences_last_userId), uid);
+        } else {
+            editor.putString(getString(R.string.rss_feed_preferences_rssUrl), url);
+        }
         editor.commit();
     }
 
@@ -269,7 +240,7 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
             public void run() {
                 Toast.makeText(getContext(), R.string.rss_feed_success_load_from_internet, Toast.LENGTH_LONG).show();
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                setLastUserUidPreference(uid);
+                setPreference(uid, null);
                 CacheRepository.getInstance().writeRssToCache(getContext(), feedsAdapter.getFeedItems(), uid);
             }
         });
@@ -290,6 +261,27 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         if (progressDialog != null) {
             progressDialog.hide();
         }
+    }
+
+    private void askToInputNewUrl(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(false)
+                .setMessage(R.string.rss_feed_correct_url_request)
+                .setTitle(title)
+                .setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                showRssSourceInputDialog();
+                            }
+                        })
+                .setNegativeButton(R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+        builder.create().show();
     }
 
     @Override

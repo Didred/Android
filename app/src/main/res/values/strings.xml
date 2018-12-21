@@ -58,5 +58,5 @@
     <string name="registration_error_email">Error email</string>
     <string name="registration_error_password">Error password</string>
     <string name="registration_error_password_confirm">Error password confirm</string>
-    <string name="youre_about_to_loose_changes">You\'re about to loose unsaved changes!</string>
+    <string name="youre_about_to_loose_changes">You\'re about to lose unsaved changes!</string>
 </resources>

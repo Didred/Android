@@ -50,11 +50,13 @@ public class FeedsAdapter extends RecyclerView.Adapter<FeedsAdapter.MyViewHolder
         holder.Title.setText(item.getTitle());
         holder.Description.setText(item.getDescription());
         holder.Date.setText(item.getPubDate());
-        Glide
-                .with(context)
-                .load(item.getThumbnailUrl())
-                .into(holder.Thumbnail);
-        holder.setOnClickListener(onItemClickListener, item);
+        if (item.getThumbnailUrl() != null && !item.getThumbnailUrl().equals("")) {
+           Glide
+                    .with(context)
+                    .load(item.getThumbnailUrl())
+                    .into(holder.Thumbnail);
+            holder.setOnClickListener(onItemClickListener, item);
+        }
     }
 
     @Override

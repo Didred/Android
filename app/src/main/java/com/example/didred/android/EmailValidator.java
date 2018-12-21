@@ -1,6 +1,5 @@
 package com.example.didred.android;
 
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -8,11 +7,9 @@ import android.widget.EditText;
 
 public class EmailValidator implements TextWatcher {
     private EditText editText;
-    private Context context;
 
-    public EmailValidator(EditText editText, Context context) {
+    public EmailValidator(EditText editText) {
         this.editText = editText;
-        this.context = context;
     }
 
     @Override
