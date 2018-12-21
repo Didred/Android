@@ -76,7 +76,6 @@ public class ProfileFragment extends Fragment {
     private View.OnClickListener logoutButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-            ((MainActivity) getActivity()).cleanArticlesCache();
             userRepository.signOut();
             ((MainActivity) getActivity()).startAuthActivity();
         }

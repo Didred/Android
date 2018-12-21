@@ -1,6 +1,8 @@
 package com.example.didred.android;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -71,31 +73,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, AboutActivity.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -103,14 +83,25 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         hideKeyboard();
 
+        int navigationId = 0;
         int id = item.getItemId();
+
         if (id == R.id.nav_home) {
-            navController.navigate(R.id.homeFragment);
+            navigationId = R.id.homeFragment;
         }
         else if (id == R.id.nav_profile) {
-            navController.navigate(R.id.profileFragment);
-        } else if (id == R.id.nav_rss) {
-            navController.navigate(R.id.rssFragment);
+            navigationId = R.id.profileFragment;
+        }
+        else if (id == R.id.nav_rss) {
+            navigationId = R.id.rssFragment;
+        }
+
+        if (navigationId != 0){
+            if (navController.getCurrentDestination().getId() == R.id.profileEditFragment) {
+                askAndNavigateToFragment(navigationId, null);
+            } else {
+                navController.navigate(navigationId);
+            }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -118,7 +109,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void hideKeyboard(){
+    public void hideKeyboard(){
         if(getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -135,11 +126,8 @@ public class MainActivity extends AppCompatActivity
         finish();
     }
 
-    public void cleanArticlesCache(){
-        getSharedPreferences("data", Context.MODE_PRIVATE)
-                .edit()
-                .putString("articles", "")
-                .apply();
+    private void startAboutActivity(){
+        startActivity(new Intent(this, AboutActivity.class));
     }
 
     public void updateNavImage(){
@@ -192,4 +180,51 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         return headerView.findViewById(R.id.nav_header_profile_fullname);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (navController.getCurrentDestination().getId() == R.id.profileEditFragment) {
+            askAndNavigateToFragment(R.id.profileFragment, null);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                if (navController.getCurrentDestination().getId() == R.id.profileEditFragment) {
+                    askAndNavigateToFragment(0, this);
+                } else {
+                    startAboutActivity();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void askAndNavigateToFragment(final int fragmentId, final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.youre_about_to_loose_changes)
+                .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (context == null) {
+                            navController.navigate(fragmentId);
+                        }
+                        else{
+                            startAboutActivity();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.stay, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create().show();
+    }
+
+
 }

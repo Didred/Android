@@ -44,9 +44,13 @@ public class RegistrationFragment extends Fragment {
         userRepository = new UserRepository();
 
         registerButton = view.findViewById(R.id.r_register);
+
         loginButton = view.findViewById(R.id.back);
         registerButton.setOnClickListener(register);
+
         emailEditText = view.findViewById(R.id.r_email);
+        emailEditText.addTextChangedListener(new EmailValidator(emailEditText, getContext()));
+
         passwordEditText = view.findViewById(R.id.r_password);
         confirmPasswordEditText = view.findViewById(R.id.confirmPassword);
 
@@ -61,6 +65,7 @@ public class RegistrationFragment extends Fragment {
     private View.OnClickListener register = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
+            if (emailEditText.getError() != null) return;
             disableButtons();
 
             final String email = emailEditText.getText().toString().trim();

@@ -36,10 +36,6 @@ public class UserRepository {
         return user.getEmail();
     }
 
-    public Task<Void> updateEmail(String email){
-        return user.updateEmail(email);
-    }
-
     public Task<AuthResult> createNewUser(String email, String password){
         return authInstance.createUserWithEmailAndPassword(email, password);
     }

@@ -47,6 +47,8 @@ public class LoginFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
 
         emailField = view.findViewById(R.id.emailField);
+        emailField.addTextChangedListener(new EmailValidator(emailField, getContext()));
+
         passwordField = view.findViewById(R.id.passwordField);
 
         createNewUserButton = view.findViewById(R.id.createNewUserButton);
@@ -61,6 +63,7 @@ public class LoginFragment extends Fragment {
     private View.OnClickListener loginButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
+            if (emailField.getError() != null) return;
             disableButtons();
 
             final String email = emailField.getText().toString().trim();

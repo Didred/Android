@@ -7,6 +7,8 @@
     <string name="url">URL</string>
     <string name="cancel">Cancel</string>
     <string name="login">Login</string>
+    <string name="leave">Leave</string>
+    <string name="stay">Stay</string>
     <string name="profileImage">ProfileImage</string>
     <string name="cacheRepository">CacheRepository</string>
     <string name="profileEditImage">ProfileEditImage</string>
@@ -35,7 +37,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="hello_rss_fragment">Rss</string>
-    <string name="rss_input_dialog_source_example">http://rss_sourse.xml</string>
+    <string name="rss_input_dialog_source_example">http://rss.nytimes.com</string>
     <string name="rss_feed_loading_error_message">Loading failed.</string>
     <string name="rss_feed_incorrect_url">Incorrect RssFeed link</string>
     <string name="rss_feed_connection_error">No internet connection</string>
@@ -56,4 +58,5 @@
     <string name="registration_error_email">Error email</string>
     <string name="registration_error_password">Error password</string>
     <string name="registration_error_password_confirm">Error password confirm</string>
+    <string name="youre_about_to_loose_changes">You\'re about to loose unsaved changes!</string>
 </resources>

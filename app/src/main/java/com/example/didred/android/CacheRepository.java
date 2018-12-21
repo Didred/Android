@@ -80,7 +80,7 @@ public class CacheRepository {
     private File getTempFile(Context context, String fileName) {
         File cacheFile = new File(context.getCacheDir(), fileName);
         if (cacheFile.exists()) {
-            return  cacheFile;
+            return cacheFile;
         }
         try {
             cacheFile.createNewFile();
@@ -92,26 +92,12 @@ public class CacheRepository {
 
     private void removeTempFile(Context context, String fileName){
         File cacheFile = new File(context.getCacheDir(), fileName);
-        if (cacheFile != null && cacheFile.exists()) {
+        if (cacheFile.exists()) {
             cacheFile.delete();
         }
     }
 
     public void removeCacheForUser(Context context, String userUid) {
         removeTempFile(context, userUid);
-    }
-
-    class JsonFeedItemsAdapter {
-        public List<FeedItem> getFeedItems() {
-            return feedItems;
-        }
-
-        public void setFeedItems(List<FeedItem> feedItems) {
-            this.feedItems = feedItems;
-        }
-
-        @SerializedName("feedItems")
-        @Expose
-        private List<FeedItem> feedItems;
     }
 }

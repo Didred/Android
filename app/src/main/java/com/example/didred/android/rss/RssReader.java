@@ -60,10 +60,6 @@ public class RssReader extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    public void removeOnProgressListener(OnProgressListener listener) {
-        onProgressListeners.remove(listener);
-    }
-
     public void notifyOnProgressStarted() {
         for (OnProgressListener listener:onProgressListeners) {
             listener.onProgressStarted();
@@ -80,10 +76,6 @@ public class RssReader extends AsyncTask<Void, Void, Void> {
         if (!onItemsLoadedListeners.contains(listener)) {
             onItemsLoadedListeners.add(listener);
         }
-    }
-
-    public void removeOnExecutedListener(OnItemsLoadedListener listener) {
-        onItemsLoadedListeners.remove(listener);
     }
 
     private void notifyOnItemsLoaded() {
@@ -111,20 +103,10 @@ public class RssReader extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    public void removeOnFeedItemLoadedListener(OnFeedItemLoadedListener listener) {
-        onFeedItemLoadedListeners.remove(listener);
-    }
-
     private void notifyOnFeedItemLoaded(FeedItem item) {
 
         for (OnFeedItemLoadedListener listener: onFeedItemLoadedListeners) {
             listener.onFeedItemLoaded(item);
-        }
-    }
-
-    private void notifyOnFeedItemLoadFailed(Exception e) {
-        for (OnFeedItemLoadedListener listener: onFeedItemLoadedListeners) {
-            listener.onFeedItemLoadFailed(e);
         }
     }
 

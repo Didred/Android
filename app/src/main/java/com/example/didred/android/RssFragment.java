@@ -32,6 +32,7 @@ import com.example.didred.android.rss.FeedsAdapter;
 import com.example.didred.android.rss.RssReader;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
@@ -96,7 +97,6 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         setHasOptionsMenu(true);
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -108,7 +108,7 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         onItemClickListener = new FeedsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(FeedItem item) {
-                if (!loadedFromCache) {
+                if (isOnline()) {
                     Intent intent = new Intent(getContext(), RssWebViewActivity.class);
                     intent.putExtra(String.valueOf(R.string.url), item.getLink());
                     startActivity(intent);
@@ -121,7 +121,7 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         String lastUserId = sharedPref.getString(getString(R.string.rss_feed_preferences_last_userId), null);
         String rssUrl = sharedPref.getString(getString(R.string.rss_feed_preferences_rssUrl), null);
-        if (lastUserId == null){
+        if (lastUserId == null) {
             askToInputNewUrl(getString(R.string.rss_feed_welcome));
         } else if (!lastUserId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             CacheRepository.getInstance().removeCacheForUser(getContext(), lastUserId);
@@ -145,12 +145,9 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
     private void doRss(String address) {
         feedsAdapter = new FeedsAdapter(getContext(), new ArrayList<FeedItem>(), onItemClickListener);
         recyclerView.setAdapter(feedsAdapter);
-        ConnectivityManager cm =
-                (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnected();
+        boolean isConnected = isOnline();
+
         if (isConnected) {
             loadRssFromTheInternet(address);
         } else {
@@ -167,11 +164,27 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
     }
 
     private void loadRssFeedFromCache() {
-        loadedFromCache = true;
+        //loadedFromCache = true;
         ArrayList<FeedItem> items = CacheRepository.getInstance().readRssCache(getContext(),
                 FirebaseAuth.getInstance().getCurrentUser().getUid());
         feedsAdapter.setFeedItems(items);
         Toast.makeText(getContext(), R.string.rss_feed_success_load_from_cache, Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private void askToInputNewUrl(String title) {
@@ -200,29 +213,26 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
         LayoutInflater li = LayoutInflater.from(getContext());
         View dialogView = li.inflate(R.layout.rss_source_input_dialog, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setView(dialogView);
 
-        final EditText sourceInput = dialogView.findViewById(R.id.rssSourseInputDialogField);
+        final EditText sourceInput = dialogView.findViewById(R.id.rssSourceInputDialogField);
 
-        builder
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                String url = sourceInput.getText().toString();
-                                setRssUrlPreference(url);
-                                doRss(url);
-                            }
-                        })
-                .setNegativeButton(R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+        builder.setCancelable(false).setPositiveButton(R.string.ok,
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog,int id) {
+                    String url = sourceInput.getText().toString();
+                    setRssUrlPreference(url);
+                    doRss(url);
+                }
+            })
+            .setNegativeButton(R.string.cancel,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -263,7 +273,6 @@ public class RssFragment extends Fragment implements RssReader.OnFeedItemLoadedL
                 CacheRepository.getInstance().writeRssToCache(getContext(), feedsAdapter.getFeedItems(), uid);
             }
         });
-
     }
 
     @Override

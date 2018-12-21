@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/rssSourseInputDialogField"
+        android:id="@+id/rssSourceInputDialogField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/rss_input_dialog_source_example" />

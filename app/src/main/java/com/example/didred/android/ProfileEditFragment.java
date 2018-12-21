@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -148,14 +147,17 @@ public class ProfileEditFragment extends Fragment {
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        ((MainActivity) getActivity()).updateNavImage();
                         navController.navigate(R.id.profileFragment);
                     }
                 });
             }
-            else{
+            else {
                 enableButtons();
                 navController.navigate(R.id.profileFragment);
             }
+
+            ((MainActivity) getActivity()).hideKeyboard();
         }
     };
 
